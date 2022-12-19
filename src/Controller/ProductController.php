@@ -68,7 +68,7 @@ class ProductController extends AbstractController
         $product = $this->productRepository->find($productId);
         $lowestPriceInquiry->setProduct($product);
 
-        $promotions = $promotionCache->findValidforProduct($product, $lowestPriceInquiry->getRequestDate());
+        $promotions = $promotionCache->findValidForProduct($product, $lowestPriceInquiry->getRequestDate());
 
         $modifiedInquiry = $promotionFilter->apply($lowestPriceInquiry, ...$promotions);
 
