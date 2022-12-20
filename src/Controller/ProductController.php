@@ -27,6 +27,7 @@ class ProductController extends AbstractController
     #[Route('/product/promotions', name: 'app_products_promotions', methods: 'POST')]
     public function promotions(Request $request): JsonResponse
     {
+        //$productId = $request->request->get('product_id');
         $params = json_decode($request->getContent(), true);
         $productId = $params['product_id'];
 
