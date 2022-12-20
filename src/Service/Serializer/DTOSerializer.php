@@ -2,7 +2,9 @@
 
 namespace App\Service\Serializer;
 
+use App\Event\AfterDtoCreatedEvent;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
@@ -15,7 +17,7 @@ class DTOSerializer implements SerializerInterface
 {
     private SerializerInterface $serializer;
 
-    public function __construct()
+    public function __construct(private readonly EventDispatcherInterface $eventDispatcher)
     {
         $this->serializer = new Serializer(
             [new ObjectNormalizer(
@@ -35,7 +37,8 @@ class DTOSerializer implements SerializerInterface
     {
         $dto = $this->serializer->deserialize($data, $type, $format, $context);
 
-        // Dispatch an after dto created event
+        $event = new AfterDtoCreatedEvent($dto);
+        $this->eventDispatcher->dispatch($event, $event::NAME);
 
         return $dto;
     }
