@@ -4,7 +4,6 @@ namespace App\EventSubscriber;
 
 use App\Event\AfterDtoCreatedEvent;
 use App\Service\ServiceException;
-use App\Service\ServiceExceptionData;
 use App\Service\ValidationExceptionData;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
