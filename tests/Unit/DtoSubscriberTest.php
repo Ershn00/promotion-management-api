@@ -4,14 +4,22 @@ namespace App\Tests\Unit;
 
 use App\DTO\LowestPriceInquiry;
 use App\Event\AfterDtoCreatedEvent;
+use App\EventSubscriber\DtoSubscriber;
+use App\Service\ServiceException;
 use App\Tests\BaseTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DtoSubscriberTest extends BaseTestCase
 {
     /** @test */
-    public function DtoValidatedAfterCreated()
+    public function testEventSubscription(): void
+    {
+        $this->assertArrayHasKey(AfterDtoCreatedEvent::NAME, DtoSubscriber::getSubscribedEvents());
+    }
+
+    /** @test */
+    public function dtoValidatedAfterCreated(): void
     {
         $dto = new LowestPriceInquiry();
         $dto->setQuantity(-5);
@@ -19,10 +27,10 @@ class DtoSubscriberTest extends BaseTestCase
         $event = new AfterDtoCreatedEvent($dto);
 
         /** @var EventDispatcher $eventDispatcher */
-        $eventDispatcher = $this->container->get('debug.event_dispatcher');
+        $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
 
-        $this->expectException(ValidationFailedException::class);
-        $this->expectExceptionMessage('This value should be positive');
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Validation failed');
 
         $eventDispatcher->dispatch($event, $event::NAME);
     }

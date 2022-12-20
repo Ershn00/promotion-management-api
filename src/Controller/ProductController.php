@@ -4,20 +4,15 @@ namespace App\Controller;
 
 use App\Cache\PromotionCache;
 use App\DTO\LowestPriceInquiry;
-use App\Entity\Promotion;
 use App\Filter\PromotionFilterInterface;
 use App\Repository\ProductRepository;
 use App\Service\Serializer\DTOSerializer;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class ProductController extends AbstractController
 {
@@ -65,7 +60,8 @@ class ProductController extends AbstractController
             'json'
         );
 
-        $product = $this->productRepository->find($productId);
+        $product = $this->productRepository->findOrFail($productId);
+
         $lowestPriceInquiry->setProduct($product);
 
         $promotions = $promotionCache->findValidForProduct($product, $lowestPriceInquiry->getRequestDate());
@@ -76,7 +72,7 @@ class ProductController extends AbstractController
 
         return new Response(
             $response,
-            200,
+            Response::HTTP_OK,
             ['Content-Type' => 'application/json']
         );
     }
