@@ -14,7 +14,7 @@ class ProductPromotion
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'promotion')]
+    #[ORM\ManyToOne(inversedBy: 'productPromotions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 

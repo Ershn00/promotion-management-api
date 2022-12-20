@@ -8,11 +8,11 @@ use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
-class PromotionCache
+readonly class PromotionCache
 {
     public function __construct(
-        private readonly CacheInterface $cache,
-        private readonly PromotionRepository $repository
+        private CacheInterface      $cache,
+        private PromotionRepository $repository
     )
     {
     }
